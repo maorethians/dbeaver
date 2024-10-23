@@ -116,6 +116,26 @@ public class SQLQueryDataSourceContext extends SQLQueryDataContext {
                 false,
                 identifierDetector
             );
+            if (obj == null) {
+                DBSVisibilityScopeProvider scopeProvider = DBUtils.getSelectedObject(this.executionContext) instanceof DBSVisibilityScopeProvider currentScope
+                    ? currentScope
+                    : (this.executionContext.getDataSource() instanceof DBSVisibilityScopeProvider contextScope ? contextScope : null);
+                if (scopeProvider != null) {
+                    try {
+                        for (DBSObjectContainer scope : scopeProvider.getPublicScopes(monitor)) {
+                            List<String> objectName3 = new ArrayList<>(objectName);
+                            obj = SQLSearchUtils.findObjectByFQN(monitor, scope, this.executionContext, objectName3, false, identifierDetector);
+                            if (obj != null) {
+                                break;
+                            }
+                        }
+                    } catch (DBException e) {
+                        String name = String.join(Character.toString(this.executionContext.getDataSource().getSQLDialect().getStructSeparator()), objectName);
+                        log.error("Failed to resolve real database object " + name, e);
+                    }
+                }
+            }
+            //obj = expandAliases(monitor, obj);
             return obj;
         } else {
             // Semantic analyser should never be used for databases, which doesn't support table lookup

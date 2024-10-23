@@ -19,6 +19,7 @@ package org.jkiss.dbeaver.ext.sqlite.model;
 import org.jkiss.code.NotNull;
 import org.jkiss.code.Nullable;
 import org.jkiss.dbeaver.DBException;
+import org.jkiss.dbeaver.ext.generic.model.GenericDataSource;
 import org.jkiss.dbeaver.ext.generic.model.GenericStructContainer;
 import org.jkiss.dbeaver.ext.generic.model.GenericTable;
 import org.jkiss.dbeaver.ext.generic.model.GenericUniqueKey;
@@ -35,6 +36,7 @@ import org.jkiss.dbeaver.model.exec.jdbc.JDBCSession;
 import org.jkiss.dbeaver.model.runtime.DBRProgressMonitor;
 import org.jkiss.dbeaver.model.runtime.VoidProgressMonitor;
 import org.jkiss.dbeaver.model.struct.DBSEntityConstraintType;
+import org.jkiss.dbeaver.model.struct.rdb.DBSTable;
 import org.jkiss.dbeaver.model.struct.rdb.DBSTableConstraint;
 
 import java.sql.SQLException;
@@ -81,7 +83,7 @@ public class SQLiteTable extends GenericTable implements DBDPseudoAttributeConta
     // We use ROWID only if we don't have primary key. Looks like it is the only way to determine ROWID column presence.
     @Override
     public DBDPseudoAttribute[] getPseudoAttributes() throws DBException {
-        if (hasPrimaryKey()) {
+        if (hasPrimaryKey(this)) {
             return null;
         }
         return new DBDPseudoAttribute[] { PSEUDO_ATTR_ROWID };
@@ -89,36 +91,36 @@ public class SQLiteTable extends GenericTable implements DBDPseudoAttributeConta
 
     @Override
     public DBDPseudoAttribute[] getAllPseudoAttributes(@NotNull DBRProgressMonitor monitor) throws DBException {
-        if (this.allPseudoAttributes == null) {
-
-            boolean isWithoutRowId = this.obtainIsWithoutRowId(monitor);
-            if (isWithoutRowId) {
-                this.allPseudoAttributes = DBDPseudoAttribute.EMPTY_ARRAY;
-            } else {
-                // see https://www.sqlite.org/lang_createtable.html#rowid (5. ROWIDs and the INTEGER PRIMARY KEY):
-                //     If a table contains a user defined column named "rowid", "oid" or "_rowid_",
-                //     then that name always refers the explicitly declared column and cannot be used to retrieve the integer rowid value.
-
-                Set<String> columnNames = this.getAttributes(monitor).stream()
-                    .map(a -> a.getName().toLowerCase())
-                    .collect(Collectors.toSet());
-                this.allPseudoAttributes = ALL_KNOWN_PSEUDO_ATTRS.stream()
-                    .filter(a -> !columnNames.contains(a.getName())) // all names are lowercased here
-                    .toArray(DBDPseudoAttribute[]::new);
-            }
-        }
-        return this.allPseudoAttributes;
+        return this.allPseudoAttributes != null ? this.allPseudoAttributes : (this.allPseudoAttributes = obtainAllPseudoAttributes(this.getDataSource(), this, monitor));
     }
 
-    private boolean obtainIsWithoutRowId(@NotNull DBRProgressMonitor monitor) throws DBException {
+    public static DBDPseudoAttribute[] obtainAllPseudoAttributes(GenericDataSource dataSource, DBSTable table, @NotNull DBRProgressMonitor monitor) throws DBException {
+        boolean isWithoutRowId = obtainIsWithoutRowId(dataSource, table, monitor);
+        if (isWithoutRowId) {
+            return DBDPseudoAttribute.EMPTY_ARRAY;
+        } else {
+            // see https://www.sqlite.org/lang_createtable.html#rowid (5. ROWIDs and the INTEGER PRIMARY KEY):
+            //     If a table contains a user defined column named "rowid", "oid" or "_rowid_",
+            //     then that name always refers the explicitly declared column and cannot be used to retrieve the integer rowid value.
+
+            Set<String> columnNames = table.getAttributes(monitor).stream()
+                .map(a -> a.getName().toLowerCase())
+                .collect(Collectors.toSet());
+            return ALL_KNOWN_PSEUDO_ATTRS.stream()
+                .filter(a -> !columnNames.contains(a.getName())) // all names are lowercased here
+                .toArray(DBDPseudoAttribute[]::new);
+        }
+    }
+
+    private static boolean obtainIsWithoutRowId(GenericDataSource dataSource, DBSTable table, @NotNull DBRProgressMonitor monitor) throws DBException {
         // https://www.sqlite.org/releaselog/3_8_2.html - Added support for WITHOUT ROWID tables.
         // https://www.sqlite.org/releaselog/3_30_0.html - The index_info and index_xinfo pragmas are enhanced
         //                      to provide information about the on-disk representation of WITHOUT ROWID tables.
 
-        if (this.getDataSource().isServerVersionAtLeast(3, 30)) { // obtain metainfo in a normal way
-            try (JDBCSession session = DBUtils.openMetaSession(monitor, this, "Obtaining table's extra metadata")) {
+        if (dataSource.isServerVersionAtLeast(3, 30)) { // obtain metainfo in a normal way
+            try (JDBCSession session = DBUtils.openMetaSession(monitor, table, "Obtaining table's extra metadata")) {
                 try (JDBCPreparedStatement dbStat = session.prepareStatement("SELECT EXISTS(SELECT 1 FROM pragma_index_info(?)) as isWithoutRowId")) {
-                    dbStat.setString(1, this.getName());
+                    dbStat.setString(1, table.getName());
                     try (JDBCResultSet resultSet = dbStat.executeQuery()) {
                         return resultSet.next() && resultSet.getBoolean("isWithoutRowId");
                     }
@@ -126,9 +128,9 @@ public class SQLiteTable extends GenericTable implements DBDPseudoAttributeConta
                     throw new DBException("Failed to obtain isWithoutRowId flag for table", e);
                 }
             }
-        } else if (this.getDataSource().isServerVersionAtLeast(3, 8)) { // try to execute query with all the possible rowid names
-            try (JDBCSession session = DBUtils.openMetaSession(monitor, this, "Obtaining table's extra metadata")) {
-                String tableName = this.getFullyQualifiedName(DBPEvaluationContext.DML);
+        } else if (dataSource.isServerVersionAtLeast(3, 8)) { // try to execute query with all the possible rowid names
+            try (JDBCSession session = DBUtils.openMetaSession(monitor, table, "Obtaining table's extra metadata")) {
+                String tableName = table.getFullyQualifiedName(DBPEvaluationContext.DML);
                 String sql = "SELECT EXISTS(SELECT rowid, oid, _rowid_ FROM " + tableName + ") as test";
                 try (JDBCPreparedStatement dbStat = session.prepareStatement(sql)) {
                     try (JDBCResultSet resultSet = dbStat.executeQuery()) {
@@ -156,8 +158,8 @@ public class SQLiteTable extends GenericTable implements DBDPseudoAttributeConta
         }
     }
 
-    private boolean hasPrimaryKey() throws DBException {
-        List<GenericUniqueKey> constraints = getConstraints(new VoidProgressMonitor());
+    public static boolean hasPrimaryKey(DBSTable table) throws DBException {
+        Collection<? extends DBSTableConstraint> constraints = table.getConstraints(new VoidProgressMonitor());
         if (constraints != null) {
             for (DBSTableConstraint cons : constraints) {
                 if (cons.getConstraintType() == DBSEntityConstraintType.PRIMARY_KEY) {
