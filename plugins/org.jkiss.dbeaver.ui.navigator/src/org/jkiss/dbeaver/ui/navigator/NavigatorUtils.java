@@ -412,8 +412,21 @@ public class NavigatorUtils {
         try {
             Map<DBNDatabaseNode, DBSObjectFilter> folders = new HashMap<>();
             for (Object item : structuredSelection.toArray()) {
-                if (item instanceof DBNDatabaseNode node && node.getParentNode() instanceof DBNDatabaseNode parentNode) {
-                    DBXTreeItem nodeMeta = UIUtils.runWithMonitor(monitor -> DBNUtils.getValidItemsMeta(monitor, node));
+                if (!(item instanceof DBNDatabaseNode node)) {
+                    continue;
+                }
+                DBNDatabaseNode parentNode = node.getParentNode() instanceof DBNDatabaseNode parent ? parent : node;
+                {
+                    DBXTreeItem nodeMeta = UIUtils.runWithMonitor(monitor -> {
+                        DBXTreeItem meta = DBNUtils.getValidItemsMeta(monitor, node);
+                        if (meta == null && node != parentNode) {
+                            meta = DBNUtils.getValidItemsMeta(monitor, parentNode);
+                        }
+                        return meta;
+                    });
+                    if (nodeMeta == null) {
+                        continue;
+                    }
 
                     DBSObjectFilter nodeFilter = folders.get(parentNode);
                     if (nodeFilter == null) {
