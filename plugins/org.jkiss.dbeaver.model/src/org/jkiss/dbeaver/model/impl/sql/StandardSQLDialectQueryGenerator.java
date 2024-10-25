@@ -38,7 +38,6 @@ import org.jkiss.utils.Pair;
 import java.lang.reflect.Array;
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class StandardSQLDialectQueryGenerator implements SQLQueryGenerator {
     private static final Log log = Log.getLog(StandardSQLDialectQueryGenerator.class);
@@ -79,33 +78,6 @@ public class StandardSQLDialectQueryGenerator implements SQLQueryGenerator {
                 appendOrderString(dataFilter, dataSource, tableAlias, false, query);
             }
         }
-    }
-
-
-    @Override
-    public void appendConditionString(
-        @NotNull DBDDataFilter filter,
-        @NotNull DBPDataSource dataSource,
-        @Nullable String conditionTable,
-        @NotNull StringBuilder query,
-        boolean inlineCriteria
-    ) {
-        appendConditionString(filter, dataSource, conditionTable, query, inlineCriteria, false);
-    }
-
-    @Override
-    public void appendConditionString(
-        @NotNull DBDDataFilter filter,
-        @NotNull DBPDataSource dataSource,
-        @Nullable String conditionTable,
-        @NotNull StringBuilder query,
-        boolean inlineCriteria,
-        boolean subQuery
-    ) {
-        final List<DBDAttributeConstraint> constraints = filter.getConstraints().stream()
-            .filter(x -> x.getCriteria() != null || x.getOperator() != null)
-            .collect(Collectors.toList());
-        appendConditionString(filter, constraints, dataSource, conditionTable, query, inlineCriteria, subQuery);
     }
 
     @Override
