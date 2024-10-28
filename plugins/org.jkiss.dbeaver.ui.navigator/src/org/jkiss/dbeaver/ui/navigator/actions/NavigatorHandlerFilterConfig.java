@@ -28,6 +28,7 @@ import org.eclipse.ui.menus.UIElement;
 import org.jkiss.dbeaver.DBException;
 import org.jkiss.dbeaver.Log;
 import org.jkiss.dbeaver.model.DBPDataSource;
+import org.jkiss.dbeaver.model.DBPDataSourceContainer;
 import org.jkiss.dbeaver.model.app.DBPDataSourceRegistry;
 import org.jkiss.dbeaver.model.navigator.*;
 import org.jkiss.dbeaver.model.navigator.meta.DBXTreeItem;
@@ -69,8 +70,8 @@ public class NavigatorHandlerFilterConfig extends NavigatorHandlerObjectCreateBa
                 final DBPDataSourceRegistry dsRegistry = dbNode.getOwnerProject().getDataSourceRegistry();
                 final boolean globalFilter = dbNode.getValueObject() instanceof DBPDataSource;
                 String parentName = "?";
-                if (dbNode.getValueObject() instanceof DBSObject) {
-                    parentName = ((DBSObject) dbNode.getValueObject()).getName();
+                if (dbNode.getValueObject() instanceof DBSObject dbsObject) {
+                    parentName = dbsObject.getName();
                 }
                 EditObjectFilterDialog dialog = new EditObjectFilterDialog(
                     shell,
@@ -80,8 +81,8 @@ public class NavigatorHandlerFilterConfig extends NavigatorHandlerObjectCreateBa
                     globalFilter);
                 switch (dialog.open()) {
                     case IDialogConstants.OK_ID:
-                        dbNode.setNodeFilter(itemsMeta, dialog.getFilter(), true);
-                        NavigatorHandlerRefresh.refreshNavigator(Collections.singletonList(dbNode));
+                        parentNode.setNodeFilter(itemsMeta, dialog.getFilter(), true);
+                        NavigatorHandlerRefresh.refreshNavigator(Collections.singletonList(parentNode));
                         break;
                     case EditObjectFilterDialog.SHOW_GLOBAL_FILTERS_ID: {
                         Class<?> childrenClass = null;
@@ -98,7 +99,8 @@ public class NavigatorHandlerFilterConfig extends NavigatorHandlerObjectCreateBa
                                 "Bad node", "Cannot use node '" + dbNode.getNodeUri() + "' for filters", true);
                             return;
                         }
-                        objectFilter = dbNode.getDataSource().getContainer().getObjectFilter(childrenClass, null, true);
+                        DBPDataSourceContainer dataSourceContainer = dbNode.getDataSourceContainer();
+                        objectFilter = dataSourceContainer.getObjectFilter(childrenClass, null, true);
                         dialog = new EditObjectFilterDialog(
                             shell,
                             dsRegistry, "All " + dbNode.getNodeTypeLabel(),
@@ -106,9 +108,9 @@ public class NavigatorHandlerFilterConfig extends NavigatorHandlerObjectCreateBa
                             true);
                         if (dialog.open() == IDialogConstants.OK_ID) {
                             // Set global filter
-                            dbNode.getDataSource().getContainer().setObjectFilter(childrenClass, null, dialog.getFilter());
-                            dbNode.getDataSource().getContainer().persistConfiguration();
-                            NavigatorHandlerRefresh.refreshNavigator(Collections.singletonList(dbNode));
+                            dataSourceContainer.setObjectFilter(childrenClass, null, dialog.getFilter());
+                            dataSourceContainer.persistConfiguration();
+                            NavigatorHandlerRefresh.refreshNavigator(Collections.singletonList(parentNode));
                         }
                         break;
                     }
