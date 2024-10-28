@@ -60,7 +60,8 @@ public class NavigatorHandlerFilterConfig extends NavigatorHandlerObjectCreateBa
 
     public static void configureFilters(Shell shell, DBNDatabaseNode dbNode) {
         try {
-            DBNDatabaseNode parentNode = dbNode.getParentNode() instanceof DBNDatabaseFolder parent ? parent : dbNode;
+            DBNDatabaseNode parentNode = !(dbNode instanceof DBNDatabaseFolder) &&
+                                         dbNode.getParentNode() instanceof DBNDatabaseNode parent ? parent : dbNode;
             DBXTreeItem itemsMeta = UIUtils.runWithMonitor(monitor -> DBNUtils.getValidItemsMeta(monitor, parentNode));
             if (itemsMeta != null) {
                 DBSObjectFilter objectFilter = parentNode.getNodeFilter(itemsMeta, true);
