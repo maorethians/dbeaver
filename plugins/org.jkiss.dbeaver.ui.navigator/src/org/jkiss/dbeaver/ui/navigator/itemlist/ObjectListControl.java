@@ -1203,6 +1203,9 @@ public abstract class ObjectListControl<OBJECT_TYPE> extends ProgressPageControl
             if (CommonUtils.isEmpty(text)) {
                 return null;
             }
+            if (text.length() > 100) {
+                text = text.substring(0, 100) + "...";
+            }
             return text;
         }
     }

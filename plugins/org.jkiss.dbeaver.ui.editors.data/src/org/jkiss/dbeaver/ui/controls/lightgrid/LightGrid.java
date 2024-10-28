@@ -51,7 +51,7 @@ public abstract class LightGrid extends Canvas {
 
     private static final Log log = Log.getLog(LightGrid.class);
 
-    private static final int MAX_TOOLTIP_LENGTH = 1000;
+    private static final int MAX_TOOLTIP_LENGTH = 100;
 
     protected static final int Event_ChangeSort = 1000;
     protected static final int Event_NavigateLink = 1001;
@@ -4760,7 +4760,7 @@ public abstract class LightGrid extends Canvas {
         String text = String.valueOf(cellValue);
         // Truncate too long texts (they are really bad for performance)
         if (text.length() > MAX_TOOLTIP_LENGTH) {
-            text = text.substring(0, MAX_TOOLTIP_LENGTH) + " ...";
+            text = text.substring(0, MAX_TOOLTIP_LENGTH) + "...";
         }
 
         return text;
