@@ -1326,7 +1326,8 @@ public abstract class SQLEditorBase extends BaseTextEditor implements
     @Nullable
     @Override
     public DBPDataSourceContainer getDataSourceContainer() {
-        return null;
+        DBPDataSource dataSource = getDataSource();
+        return dataSource == null ? null : dataSource.getContainer();
     }
 
     ////////////////////////////////////////////////////////
