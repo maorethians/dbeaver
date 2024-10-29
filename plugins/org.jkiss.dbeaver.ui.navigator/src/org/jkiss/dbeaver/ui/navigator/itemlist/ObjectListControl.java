@@ -49,10 +49,7 @@ import org.jkiss.dbeaver.model.sql.SQLUtils;
 import org.jkiss.dbeaver.runtime.DBWorkbench;
 import org.jkiss.dbeaver.runtime.properties.*;
 import org.jkiss.dbeaver.ui.*;
-import org.jkiss.dbeaver.ui.controls.ObjectViewerRenderer;
-import org.jkiss.dbeaver.ui.controls.ProgressPageControl;
-import org.jkiss.dbeaver.ui.controls.TreeContentProvider;
-import org.jkiss.dbeaver.ui.controls.ViewerColumnController;
+import org.jkiss.dbeaver.ui.controls.*;
 import org.jkiss.dbeaver.ui.internal.UINavigatorMessages;
 import org.jkiss.dbeaver.ui.navigator.NavigatorPreferences;
 import org.jkiss.dbeaver.utils.GeneralUtils;
@@ -1105,6 +1102,7 @@ public abstract class ObjectListControl<OBJECT_TYPE> extends ProgressPageControl
     // List sorter
 
     protected class ObjectColumnLabelProvider extends ColumnLabelProvider implements ILabelProviderEx {
+        private static final int MAX_TOOLTIP_LENGTH = 70;
         protected final ObjectColumn objectColumn;
 
         protected ObjectColumnLabelProvider(ObjectColumn objectColumn) {
@@ -1203,8 +1201,8 @@ public abstract class ObjectListControl<OBJECT_TYPE> extends ProgressPageControl
             if (CommonUtils.isEmpty(text)) {
                 return null;
             }
-            if (text.length() > 100) {
-                text = text.substring(0, 100) + "...";
+            if (text.length() > MAX_TOOLTIP_LENGTH) {
+                text = text.substring(0, MAX_TOOLTIP_LENGTH) + "...";
             }
             return text;
         }

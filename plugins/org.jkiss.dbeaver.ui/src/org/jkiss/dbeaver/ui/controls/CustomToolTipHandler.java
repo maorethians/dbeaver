@@ -64,9 +64,6 @@ public class CustomToolTipHandler {
             // Escape ampersands (#7101)
             text = text.replace("&", "&&");
             text = GeneralUtils.normalizeLineEndings(text);
-//            if (text.length() > 30) {
-//                text = text.substring(0, 30) + "...";
-//            }
         }
         ToolTipHandler curHandler = this.toolTipHandler;
         if (!CommonUtils.equalObjects(prevToolTip, text)) {
