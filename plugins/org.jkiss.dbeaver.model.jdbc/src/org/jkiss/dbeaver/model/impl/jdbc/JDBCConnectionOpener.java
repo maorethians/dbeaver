@@ -18,6 +18,7 @@ package org.jkiss.dbeaver.model.impl.jdbc;
 
 import org.jkiss.code.NotNull;
 import org.jkiss.code.Nullable;
+import org.jkiss.dbeaver.Log;
 import org.jkiss.dbeaver.model.access.DBAAuthSubjectCredentials;
 import org.jkiss.dbeaver.model.connection.DBPDriver;
 import org.jkiss.dbeaver.model.runtime.DBRProgressMonitor;
@@ -33,7 +34,7 @@ import java.sql.DriverManager;
 import java.util.Properties;
 
 class JDBCConnectionOpener implements DBRRunnableWithProgress, PrivilegedExceptionAction<Connection> {
-    //private static final Log log = Log.getLog(JDBCConnectionOpener.class);
+    private static final Log log = Log.getLog(JDBCConnectionOpener.class);
 
     private final DBPDriver driver;
     private final Driver driverInstance;
@@ -84,6 +85,7 @@ class JDBCConnectionOpener implements DBRRunnableWithProgress, PrivilegedExcepti
             }
             connection = jdbcConnection;
         } catch (Throwable e) {
+            log.warn("Error connect driver", e);
             error = e;
         }
     }
@@ -100,6 +102,7 @@ class JDBCConnectionOpener implements DBRRunnableWithProgress, PrivilegedExcepti
                 driversInitializedField.setAccessible(true);
                 driversInitializedField.set(null, false);
             } catch (Throwable e) {
+                log.warn("Error from driver init: ", e);
                 // Just ignore it
             }
             // Open connection
