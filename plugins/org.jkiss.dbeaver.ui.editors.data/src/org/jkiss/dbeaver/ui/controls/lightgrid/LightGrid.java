@@ -52,7 +52,7 @@ public abstract class LightGrid extends Canvas {
     private static final Log log = Log.getLog(LightGrid.class);
 
     private static final int MAX_CELL_TEXT_LENGTH = 1000;
-    private static final int MAX_TOOLTIP_LENGTH = 70;
+    private static final int MAX_TOOLTIP_LENGTH = 250;
 
     protected static final int Event_ChangeSort = 1000;
     protected static final int Event_NavigateLink = 1001;

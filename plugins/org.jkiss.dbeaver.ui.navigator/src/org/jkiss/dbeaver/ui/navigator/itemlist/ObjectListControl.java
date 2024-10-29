@@ -1102,7 +1102,7 @@ public abstract class ObjectListControl<OBJECT_TYPE> extends ProgressPageControl
     // List sorter
 
     protected class ObjectColumnLabelProvider extends ColumnLabelProvider implements ILabelProviderEx {
-        private static final int MAX_TOOLTIP_LENGTH = 70;
+        private static final int MAX_TOOLTIP_LENGTH = 250;
         protected final ObjectColumn objectColumn;
 
         protected ObjectColumnLabelProvider(ObjectColumn objectColumn) {
