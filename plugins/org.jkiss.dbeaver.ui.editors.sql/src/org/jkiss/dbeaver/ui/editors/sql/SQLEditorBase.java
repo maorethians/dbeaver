@@ -105,8 +105,7 @@ import java.util.ResourceBundle;
 public abstract class SQLEditorBase extends BaseTextEditor implements
     DBPContextProvider,
     IErrorVisualizer,
-    DBPPreferenceListener,
-    DBPDataSourceContainerProvider {
+    DBPPreferenceListener {
 
     static protected final Log log = Log.getLog(SQLEditorBase.class);
     public static final long MAX_FILE_LENGTH_FOR_RULES = 1024 * 1000 * 2; // 2MB
@@ -1324,8 +1323,7 @@ public abstract class SQLEditorBase extends BaseTextEditor implements
     }
 
     @Nullable
-    @Override
-    public DBPDataSourceContainer getDataSourceContainer() {
+    protected DBPDataSourceContainer getDataSourceContainer() {
         DBPDataSource dataSource = getDataSource();
         return dataSource == null ? null : dataSource.getContainer();
     }
