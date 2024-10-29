@@ -828,6 +828,7 @@
             <command commandId="org.eclipse.ui.navigate.collapseAll"/>
             <command commandId="org.jkiss.dbeaver.core.navigator.linkeditor"/>
             <command commandId="org.jkiss.dbeaver.core.navigator.preferences"/>
+            <command commandId="org.eclipse.ui.file.refresh"/>
         </menuContribution>
 
         <menuContribution allPopups="false" locationURI="toolbar:org.jkiss.dbeaver.core.databaseNavigator">

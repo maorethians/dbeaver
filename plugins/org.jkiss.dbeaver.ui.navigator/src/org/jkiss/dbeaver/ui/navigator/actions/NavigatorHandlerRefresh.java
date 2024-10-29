@@ -107,7 +107,7 @@ public class NavigatorHandlerRefresh extends AbstractHandler {
                 }
             }
         }
-        if (rootNode != null && rootNode.getParentNode() instanceof DBNDatabaseNode) {
+        if (rootNode != null && rootNode.getParentNode() instanceof DBNDatabaseNode || rootNode instanceof DBNProjectDatabases) {
             refreshObjects.add(rootNode);
         } else if (selection instanceof IStructuredSelection) {
             final IStructuredSelection structSelection = (IStructuredSelection)selection;
