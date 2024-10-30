@@ -1365,7 +1365,7 @@
                         class="com.dbeaver.jdbc.driver.libsql.LibSqlDriver"
                         icon="icons/libsql_icon.png"
                         iconBig="icons/libsql_icon_big.png"
-                        sampleURL="jdbc:dbeaver:libsql:{database}"
+                        sampleURL="jdbc:dbeaver:libsql:{server}"
                         defaultDatabase="http://localhost"
                         description="LibSQL DBeaver JDBC driver"
                         webURL="https://github.com/forcedotcom/Salesforce-CDP-jdbc"
