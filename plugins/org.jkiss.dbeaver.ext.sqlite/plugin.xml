@@ -4,7 +4,8 @@
 <plugin>
 
     <extension point="org.jkiss.dbeaver.generic.meta">
-        <meta id="sqlite" class="org.jkiss.dbeaver.ext.sqlite.model.SQLiteMetaModel" driverClass="org.sqlite.JDBC" dialect="sqlite"/>
+        <meta id="sqlite" class="org.jkiss.dbeaver.ext.sqlite.model.SQLiteMetaModel"
+              driverClass="org.sqlite.JDBC,com.dbeaver.jdbc.driver.libsql.LibSqlDriver" dialect="sqlite"/>
     </extension>
 
     <extension point="org.jkiss.dbeaver.dataSourceProvider">
@@ -50,6 +51,28 @@
                     <parameter name="supports-stored-code" value="false"/>
                     <parameter name="supports-truncate" value="false"/>
                 </driver>
+
+                <!-- LibSQL / Turso-->
+                <driver
+                        id="libsql_jdbc"
+                        label="LibSQL"
+                        class="com.dbeaver.jdbc.driver.libsql.LibSqlDriver"
+                        icon="icons/libsql_icon.png"
+                        iconBig="icons/libsql_icon_big.png"
+                        sampleURL="jdbc:dbeaver:libsql:{server}"
+                        defaultDatabase="http://localhost"
+                        description="LibSQL DBeaver JDBC driver. Works with standalone LibSQL server and with Turso."
+                        webURL="https://github.com/tursodatabase/libsql"
+                        databaseDocumentationSuffixURL="Database-driver-LibSQL"
+                        categories="sql">
+                    <file type="jar" path="maven:/com.dbeaver.jdbc:libsql:RELEASE[1.0.0]" bundle="!drivers.libsql"/>
+                    <parameter name="supports-references" value="true"/>
+                    <parameter name="supports-struct-cache" value="false"/>
+                    <parameter name="supports-indexes" value="true"/>
+                    <parameter name="supports-stored-code" value="false"/>
+                    <parameter name="supports-truncate" value="false"/>
+                </driver>
+
             </drivers>
         </datasource>
     </extension>
