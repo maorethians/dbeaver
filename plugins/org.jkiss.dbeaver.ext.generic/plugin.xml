@@ -1368,7 +1368,7 @@
                         sampleURL="jdbc:dbeaver:libsql:{server}"
                         defaultDatabase="http://localhost"
                         description="LibSQL DBeaver JDBC driver"
-                        webURL="https://github.com/forcedotcom/Salesforce-CDP-jdbc"
+                        webURL="https://github.com/tursodatabase/libsql"
                         databaseDocumentationSuffixURL="Database-driver-LibSQL"
                         categories="sql">
                     <file type="jar" path="maven:/com.dbeaver.jdbc:libsql:RELEASE[1.0.0]" bundle="!drivers.libsql"/>
