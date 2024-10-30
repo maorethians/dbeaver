@@ -525,7 +525,7 @@ public class PostgreDataSource extends JDBCDataSource implements DBSInstanceCont
                 timezoneOverridden = true;
             }
 
-            if (isReadDatabaseList(conConfig)){
+            if (isReadDatabaseList(conConfig) || !CommonUtils.isEmpty(conConfig.getBootstrap().getDefaultCatalogName())) {
                 // If database was changed then use new name for connection
                 String databaseName;
                 if (instance != null) {
