@@ -9,9 +9,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-17
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui.workbench.texteditor,
  org.eclipse.e4.ui.css.swt.theme,
- org.jkiss.dbeaver.registry,
- org.jkiss.dbeaver.ui.editors.base,
- org.jkiss.dbeaver.ui.navigator
+ org.jkiss.dbeaver.registry;visibility:=reexport,
+ org.jkiss.dbeaver.ui.editors.base;visibility:=reexport,
+ org.jkiss.dbeaver.ui.navigator;visibility:=reexport
 Bundle-ClassPath: .
 Export-Package: org.jkiss.dbeaver.registry,
  org.jkiss.dbeaver.ui,
