@@ -269,8 +269,8 @@
 
         <eventProcessor
                 id="failedExportFileCleaner"
-                label="Delete file in case of fail"
-                description="%dataTransfer.eventProcessor.executeCommand.description"
+                label="%dataTransfer.eventProcessor.failedExportFileCleaner.label"
+                description="%dataTransfer.eventProcessor.failedExportFileCleaner.description"
                 class="org.jkiss.dbeaver.tools.transfer.processor.FailedExportFileCleanerProcessor"
                 nodes="streamTransferConsumer"/>
 
