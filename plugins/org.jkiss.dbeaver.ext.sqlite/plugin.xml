@@ -64,6 +64,7 @@
                         description="LibSQL DBeaver JDBC driver. Works with standalone LibSQL server and with Turso."
                         webURL="https://github.com/tursodatabase/libsql"
                         databaseDocumentationSuffixURL="Database-driver-LibSQL"
+                        singleConnection="true"
                         categories="sql">
                     <file type="jar" path="maven:/com.dbeaver.jdbc:libsql:RELEASE[1.0.0]" bundle="!drivers.libsql"/>
                     <parameter name="supports-references" value="true"/>
