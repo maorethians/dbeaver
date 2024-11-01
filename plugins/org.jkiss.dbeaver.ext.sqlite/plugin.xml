@@ -67,7 +67,7 @@
                         categories="sql">
                     <file type="jar" path="maven:/com.dbeaver.jdbc:libsql:RELEASE[1.0.0]" bundle="!drivers.libsql"/>
                     <parameter name="supports-references" value="true"/>
-                    <parameter name="supports-struct-cache" value="false"/>
+                    <parameter name="supports-struct-cache" value="true"/>
                     <parameter name="supports-indexes" value="true"/>
                     <parameter name="supports-stored-code" value="false"/>
                     <parameter name="supports-truncate" value="false"/>
