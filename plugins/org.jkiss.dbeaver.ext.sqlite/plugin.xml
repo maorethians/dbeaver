@@ -15,14 +15,14 @@
                 id="sqlite"
                 parent="generic"
                 label="SQLite"
-                icon="platform:/plugin/org.jkiss.dbeaver.ext.generic/icons/sqlite_icon.png"
+                icon="icons/sqlite_icon.png"
                 dialect="sqlite">
             <drivers managable="true">
                 <driver
                         id="sqlite_jdbc"
                         label="SQLite"
-                        icon="platform:/plugin/org.jkiss.dbeaver.ext.generic/icons/sqlite_icon.png"
-                        iconBig="platform:/plugin/org.jkiss.dbeaver.ext.generic/icons/sqlite_icon_big.png"
+                        icon="icons/sqlite_icon.png"
+                        iconBig="icons/sqlite_icon_big.png"
                         class="org.sqlite.JDBC"
                         sampleURL="jdbc:sqlite:{file}"
                         supportedConfigurationTypes="MANUAL,URL"
@@ -102,7 +102,7 @@
     </extension>
 
     <extension point="org.jkiss.dbeaver.sqlDialect">
-        <dialect id="sqlite" parent="generic" class="org.jkiss.dbeaver.ext.sqlite.model.SQLiteSQLDialect" label="SQLite" description="SQLite dialect." icon="platform:/plugin/org.jkiss.dbeaver.ext.generic/icons/sqlite_icon.png">
+        <dialect id="sqlite" parent="generic" class="org.jkiss.dbeaver.ext.sqlite.model.SQLiteSQLDialect" label="SQLite" description="SQLite dialect." icon="icons/sqlite_icon.png">
             <property name="insertMethods" value="sqLiteInsertIgnore,sqLiteReplaceIgnore"/>
         </dialect>
     </extension>
